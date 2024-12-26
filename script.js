@@ -1,3 +1,5 @@
+console.log("[CryoClass] loaded");
+const time = new Date().getTime();
 const shortNames = {
     d: { name : 'display', value : { n: 'none', b: 'block', i: 'inline', ib: 'inline-block', f: 'flex', g: 'grid', } },
     jc: { name : 'justifyContent', value : { s: 'space-between', c: 'center', e: 'end', b: 'space-between', a: 'space-around', sb: 'space-between', sa: 'space-around'} },
@@ -61,4 +63,6 @@ document.querySelectorAll('*').forEach(element => {
             }
         });
     }
-});
+} );
+
+console.log('[CryoClass] Done in', new Date().getTime() - time, 'ms');
