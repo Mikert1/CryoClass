@@ -47,6 +47,10 @@ const shortNames = {
 
 };
 
+const scriptElement = document.querySelector('script[src="script.js"]');
+const errorDisplay = scriptElement ? scriptElement.getAttribute('errorDisplay') === 'true' : false;
+let debug = true;
+
 function shortNameToFullName(element, name) {
     if (shortNames[name]) {
         return shortNames[name].name;
@@ -70,7 +74,24 @@ function assignStyle(element, name, value) {
         let fullValue = shortValueToFullValue(name, value);
         element.style[fullName] = fullValue;
     } else {
-        console.log(`[CryoClass] Assuming '${name}-${value}' is a custom property. To avoid this, don't use - in your class names`);
+        if (errorDisplay) {
+            let warning = document.createElement('div');
+            warning.style.position = 'fixed';
+            warning.style.top = '50%'; warning.style.left = '50%'; warning.style.transform = 'translate(-50%, -50%)';
+            warning.style.backgroundColor = '#050505'; warning.style.color = 'white'; warning.style.padding = '1rem';
+            warning.style.zIndex = '9999';
+            warning.style.fontFamily = 'sans-serif'; warning.style.fontSize = '1.5rem'; warning.style.borderRadius = '5px'; warning.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)'; warning.style.maxWidth = '80%';
+            const h2 = document.createElement('h2'); h2.innerText = 'CryoClass Error'; warning.prepend(h2);
+            const info = document.createElement('p'); info.innerText = `Element: ${element.tagName.toLowerCase()}#${element.id}.${element.classList.value.replace(' ', '.')}`; warning.append(info);
+            const error = document.createElement('p'); error.innerText = `The class '${name}-${value}' is not a valid CSS property or known in our short properties. If this class is for your own styling then remove the '-' in your classname or remove this error completely by following the instructions below'.`; warning.append(error);
+            const tip = document.createElement('p'); tip.innerText = 'This error is displayed because of errorDisplay="true" in the script tag.'; tip.style.fontSize = '1rem'; warning.append(tip);
+            document.body.appendChild(warning);
+        } else {
+            if (debug) {
+                console.log(`[CryoClass] Some of your classes like '${name}-${value}' are not recognized. Want to debug? Set errorDisplay="true" in the script tag.`);
+                debug = false;
+            }
+        }
     }
 }
 
