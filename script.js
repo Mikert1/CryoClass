@@ -25,11 +25,11 @@ const shortNames = {
     h: { name : 'height', value : { a: 'auto', } },
     f: { name : 'flex', value : { a: 'auto', } },
     o: { name : 'order', value : { a: 'auto', } },
-    g: { name : 'grid', value : { a: 'auto', } },
+    g: { name : 'gap', value : { a: 'auto', } },
     z: { name : 'zIndex', value : { a: 'auto', } },
 
-    c: { name : 'color', value : { r: 'red', g: 'green', b: 'blue', y: 'yellow', o: 'orange', w: 'white', g: 'gray', } },
-    bc: { name : 'backgroundColor', value : { r: 'red', g: 'green', b: 'blue', y: 'yellow', o: 'orange', w: 'white', g: 'gray', } },
+    c: { name : 'color', value : { r: 'red', g: 'green', b: 'blue', y: 'yellow', o: 'orange', w: 'white', gr: 'gray', } },
+    bc: { name : 'backgroundColor', value : { r: 'red', g: 'green', b: 'blue', y: 'yellow', o: 'orange', w: 'white', gr: 'gray', } },
     b: { name : 'border', value : { n: 'none', } },
     br: { name : 'borderRadius', value : { n: 'none', } },
     bs: { name : 'boxShadow', value : { n: 'none', } },
@@ -47,11 +47,14 @@ const shortNames = {
 
 };
 
-function shortNameToFullName(name) {
+function shortNameToFullName(element, name) {
     if (shortNames[name]) {
         return shortNames[name].name;
     }
-    return name;
+    if (name in document.body.style) {
+        return name;
+    }
+    return null;
 }
 
 function shortValueToFullValue(name, value) {
@@ -61,6 +64,16 @@ function shortValueToFullValue(name, value) {
     return value;
 }
 
+function assignStyle(element, name, value) {
+    let fullName = shortNameToFullName(element, name);
+    if (fullName) {
+        let fullValue = shortValueToFullValue(name, value);
+        element.style[fullName] = fullValue;
+    } else {
+        console.log(`[CryoClass] Assuming '${name}-${value}' is a custom property. To avoid this, don't use - in your class names`);
+    }
+}
+
 document.querySelectorAll('*').forEach(element => {
     if (element.classList.length > 0) {
         element.classList.forEach(className => {
@@ -68,7 +81,7 @@ document.querySelectorAll('*').forEach(element => {
             if (classArray.length > 1) {
                 let name = classArray[0];
                 let value = classArray.slice(1).join('-');
-                element.style[shortNameToFullName(name)] = shortValueToFullValue(name, value);
+                assignStyle(element, name, value);
             }
         });
     }
