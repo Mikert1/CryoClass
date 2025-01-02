@@ -94,8 +94,7 @@ let debug = true;
 let errorDisplay = false;
 
 document.addEventListener("DOMContentLoaded", () => {
-    const scriptElement = document.querySelector('script[src="script.js"]');
-    console.log(scriptElement);
+    const scriptElement = document.querySelector('script[errorDisplay="true"]');
     errorDisplay = scriptElement ? scriptElement.getAttribute('errorDisplay') === 'true' : false;
 
     document.querySelectorAll('*').forEach(element => {
