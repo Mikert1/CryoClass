@@ -47,10 +47,6 @@ const shortNames = {
 
 };
 
-const scriptElement = document.querySelector('script[src="script.js"]');
-const errorDisplay = scriptElement ? scriptElement.getAttribute('errorDisplay') === 'true' : false;
-let debug = true;
-
 function shortNameToFullName(element, name) {
     if (shortNames[name]) {
         return shortNames[name].name;
@@ -94,18 +90,25 @@ function assignStyle(element, name, value) {
         }
     }
 }
+let debug = true;
+let errorDisplay = false;
 
-document.querySelectorAll('*').forEach(element => {
-    if (element.classList.length > 0) {
-        element.classList.forEach(className => {
-            let classArray = className.split('-');
-            if (classArray.length > 1) {
-                let name = classArray[0];
-                let value = classArray.slice(1).join('-');
-                assignStyle(element, name, value);
-            }
-        });
-    }
-} );
+document.addEventListener("DOMContentLoaded", () => {
+    const scriptElement = document.querySelector('script[src="script.js"]');
+    console.log(scriptElement);
+    errorDisplay = scriptElement ? scriptElement.getAttribute('errorDisplay') === 'true' : false;
 
-console.log('[CryoClass] Done in', new Date().getTime() - time, 'ms');
+    document.querySelectorAll('*').forEach(element => {
+        if (element.classList.length > 0) {
+            element.classList.forEach(className => {
+                let classArray = className.split('-');
+                if (classArray.length > 1) {
+                    let name = classArray[0];
+                    let value = classArray.slice(1).join('-');
+                    assignStyle(element, name, value);
+                }
+            });
+        }
+    } );
+    console.log('[CryoClass] Done in', new Date().getTime() - time, 'ms');
+});
