@@ -104,6 +104,14 @@ function processElement(element) {
     }
 }
 
+function processNode(node) {
+    if (node instanceof DocumentFragment) {
+        node.querySelectorAll('*').forEach(child => processElements(child));
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+        processElements(node);
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     console.log("[CryoClass] loaded");
     const time = new Date().getTime();
@@ -116,12 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-            mutation.addedNodes.forEach(node => {
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                    processElement(node);
-                    node.querySelectorAll('*').forEach(child => processElement(child));
-                }
-            });
+            mutation.addedNodes.forEach(processNode);
         });
         console.log("[CryoClass] MutationObserver Done");
     });
