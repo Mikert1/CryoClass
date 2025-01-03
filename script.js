@@ -1,5 +1,3 @@
-console.log("[CryoClass] loaded");
-const time = new Date().getTime();
 const shortNames = {
     d: { name : 'display', value : { n: 'none', b: 'block', i: 'inline', ib: 'inline-block', f: 'flex', g: 'grid', } },
     jc: { name : 'justifyContent', value : { s: 'space-between', c: 'center', e: 'end', b: 'space-between', a: 'space-around', sb: 'space-between', sa: 'space-around'} },
@@ -93,21 +91,42 @@ function assignStyle(element, name, value) {
 let debug = true;
 let errorDisplay = false;
 
+function processElement(element) {
+    if (element.classList.length > 0) {
+        element.classList.forEach(className => {
+            let classArray = className.split('-');
+            if (classArray.length > 1) {
+                let name = classArray[0];
+                let value = classArray.slice(1).join('-');
+                assignStyle(element, name, value);
+            }
+        });
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("[CryoClass] loaded");
+    const time = new Date().getTime();
     const scriptElement = document.querySelector('script[errorDisplay="true"]');
     errorDisplay = scriptElement ? scriptElement.getAttribute('errorDisplay') === 'true' : false;
 
     document.querySelectorAll('*').forEach(element => {
-        if (element.classList.length > 0) {
-            element.classList.forEach(className => {
-                let classArray = className.split('-');
-                if (classArray.length > 1) {
-                    let name = classArray[0];
-                    let value = classArray.slice(1).join('-');
-                    assignStyle(element, name, value);
+        processElement(element);
+    } );
+
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    processElement(node);
+                    node.querySelectorAll('*').forEach(child => processElement(child));
                 }
             });
-        }
-    } );
+        });
+        console.log("[CryoClass] MutationObserver Done");
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
     console.log('[CryoClass] Done in', new Date().getTime() - time, 'ms');
 });
