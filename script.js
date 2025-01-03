@@ -45,7 +45,13 @@ const shortNames = {
 
 };
 
-function shortNameToFullName(element, name) {
+let tipSend = false;
+const settings = {
+    errorDisplay: document.currentScript.getAttribute('errorDisplay') === 'true',
+    debugMode: document.currentScript.getAttribute('debugMode') === 'true',
+};
+
+function shortNameToFullName(name) {
     if (shortNames[name]) {
         return shortNames[name].name;
     }
@@ -62,34 +68,43 @@ function shortValueToFullValue(name, value) {
     return value;
 }
 
+function sendError(element, name, value) {
+    if (errorDisplay) {
+        let warning = document.createElement('div');
+        Object.assign(warning.style, {
+            position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+            backgroundColor: '#050505', color: 'white', padding: '1rem',
+            zIndex: '9999', fontFamily: 'sans-serif', fontSize: '1.5rem',
+            borderRadius: '5px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', maxWidth: '80%'
+        });
+        const h2 = document.createElement('h2'); h2.innerText = 'CryoClass Error'; warning.prepend(h2);
+        const info = document.createElement('p'); info.innerText = `Element: ${element.tagName.toLowerCase()}#${element.id}.${element.classList.value.replace(' ', '.')}`; warning.append(info);
+        const error = document.createElement('p'); error.innerText = `The class '${name}-${value}' is not a valid CSS property or known in our short properties. If this class is for your own styling then remove the '-' in your classname or remove this error completely by following the instructions below'.`; warning.append(error);
+        const tip = document.createElement('p'); tip.innerText = 'This error is displayed because of errorDisplay="true" in the script tag.'; tip.style.fontSize = '1rem'; warning.append(tip);
+        document.body.appendChild(warning);
+    } else {
+        if (tipSend) {
+            console.log(`[CryoClass] Some of your classes like '${name}-${value}' are not recognized. Want to debug? Set errorDisplay="true" in the script tag.`);
+            tipSend = true;
+        }
+    }
+}
+
 function assignStyle(element, name, value) {
-    let fullName = shortNameToFullName(element, name);
+    let fullName = shortNameToFullName(name);
     if (fullName) {
         let fullValue = shortValueToFullValue(name, value);
         element.style[fullName] = fullValue;
     } else {
-        if (errorDisplay) {
-            let warning = document.createElement('div');
-            warning.style.position = 'fixed';
-            warning.style.top = '50%'; warning.style.left = '50%'; warning.style.transform = 'translate(-50%, -50%)';
-            warning.style.backgroundColor = '#050505'; warning.style.color = 'white'; warning.style.padding = '1rem';
-            warning.style.zIndex = '9999';
-            warning.style.fontFamily = 'sans-serif'; warning.style.fontSize = '1.5rem'; warning.style.borderRadius = '5px'; warning.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)'; warning.style.maxWidth = '80%';
-            const h2 = document.createElement('h2'); h2.innerText = 'CryoClass Error'; warning.prepend(h2);
-            const info = document.createElement('p'); info.innerText = `Element: ${element.tagName.toLowerCase()}#${element.id}.${element.classList.value.replace(' ', '.')}`; warning.append(info);
-            const error = document.createElement('p'); error.innerText = `The class '${name}-${value}' is not a valid CSS property or known in our short properties. If this class is for your own styling then remove the '-' in your classname or remove this error completely by following the instructions below'.`; warning.append(error);
-            const tip = document.createElement('p'); tip.innerText = 'This error is displayed because of errorDisplay="true" in the script tag.'; tip.style.fontSize = '1rem'; warning.append(tip);
-            document.body.appendChild(warning);
-        } else {
-            if (debug) {
-                console.log(`[CryoClass] Some of your classes like '${name}-${value}' are not recognized. Want to debug? Set errorDisplay="true" in the script tag.`);
-                debug = false;
-            }
-        }
+        sendError(element, name, value);
     }
 }
-let debug = true;
-let errorDisplay = false;
+
+function ifDebugLog(message, element) {
+    if (settings.debugMode) {
+        console.log(message, element);
+    }
+}
 
 function processElement(element) {
     if (element.classList.length > 0) {
@@ -102,6 +117,7 @@ function processElement(element) {
             }
         });
     }
+    ifDebugLog("Processing element:", element);
 }
 
 function processNode(node) {
@@ -110,10 +126,11 @@ function processNode(node) {
     } else if (node.nodeType === Node.ELEMENT_NODE) {
         processElement(node);
     }
+    ifDebugLog("Processing node:", node);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("[CryoClass] loaded");
+    console.log("[CryoClass] Loading...");
     const time = new Date().getTime();
     const scriptElement = document.querySelector('script[errorDisplay="true"]');
     errorDisplay = scriptElement ? scriptElement.getAttribute('errorDisplay') === 'true' : false;
