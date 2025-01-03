@@ -42,7 +42,6 @@ const shortNames = {
     ta: { name : 'textAlign', value : { l: 'left', r: 'right', c: 'center', j: 'justify', } },
 
     cursor: { name : 'cursor', value : { a: 'auto', d: 'default', n: 'none', p: 'pointer', m: 'move', t: 'text', h: 'help', } },
-
 };
 
 let tipSend = false;
@@ -69,32 +68,46 @@ function shortValueToFullValue(name, value) {
 }
 
 function sendError(element, name, value) {
-    if (errorDisplay) {
-        let warning = document.createElement('div');
-        Object.assign(warning.style, {
-            position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-            backgroundColor: '#050505', color: 'white', padding: '1rem',
-            zIndex: '9999', fontFamily: 'sans-serif', fontSize: '1.5rem',
-            borderRadius: '5px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', maxWidth: '80%'
-        });
-        const h2 = document.createElement('h2'); h2.innerText = 'CryoClass Error'; warning.prepend(h2);
-        const info = document.createElement('p'); info.innerText = `Element: ${element.tagName.toLowerCase()}#${element.id}.${element.classList.value.replace(' ', '.')}`; warning.append(info);
-        const error = document.createElement('p'); error.innerText = `The class '${name}-${value}' is not a valid CSS property or known in our short properties. If this class is for your own styling then remove the '-' in your classname or remove this error completely by following the instructions below'.`; warning.append(error);
-        const tip = document.createElement('p'); tip.innerText = 'This error is displayed because of errorDisplay="true" in the script tag.'; tip.style.fontSize = '1rem'; warning.append(tip);
-        document.body.appendChild(warning);
-    } else {
-        if (tipSend) {
-            console.log(`[CryoClass] Some of your classes like '${name}-${value}' are not recognized. Want to debug? Set errorDisplay="true" in the script tag.`);
+    if (!tipSend) {
+        if (errorDisplay) {
             tipSend = true;
+            let warning = document.createElement('div');
+            Object.assign(warning.style, {
+                position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                backgroundColor: '#050505', color: 'white', padding: '1rem',
+                zIndex: '9999', fontFamily: 'sans-serif', fontSize: '1.5rem',
+                borderRadius: '5px', boxShadow: '0 0 10px rgba(0, 255, 255, 0.5)', maxWidth: '80%'
+            });
+            const h2 = document.createElement('h2'); h2.innerText = 'CryoClass Error'; warning.prepend(h2);
+            const info = document.createElement('p'); info.innerText = `Element: ${element.tagName.toLowerCase()}#${element.id}.${element.classList.value.replace(' ', '.')}`; warning.append(info);
+            const error = document.createElement('p'); error.innerText = `The class '${name}-${value}' is not a valid CSS property or known in our short properties. If this class is for your own styling then remove the '-' in your classname or remove this error completely by following the instructions below'.`; warning.append(error);
+            const tip = document.createElement('p'); tip.innerText = 'This error is displayed because of errorDisplay="true" in the script tag.'; tip.style.fontSize = '1rem'; warning.append(tip);
+            document.body.appendChild(warning);
+        } else {
+            tipSend = true;
+            console.log(`[CryoClass] Some of your classes like '${name}-${value}' are not recognized. Want to debug? Set errorDisplay="true" in the script tag.`);
         }
     }
 }
 
-function assignStyle(element, name, value) {
+function assignStyle(element, name, value, condition) {
     let fullName = shortNameToFullName(name);
     if (fullName) {
         let fullValue = shortValueToFullValue(name, value);
-        element.style[fullName] = fullValue;
+        if (condition) {
+            let conditionValue = parseInt(condition, 10);
+            function updateStyle() {
+                if (!isNaN(conditionValue) && window.innerWidth <= conditionValue) {
+                    element.style[fullName] = fullValue;
+                } else {
+                    element.style[fullName] = '';
+                }
+            }
+            updateStyle();
+            window.addEventListener('resize', updateStyle);
+        } else {
+            element.style[fullName] = fullValue;
+        }
     } else {
         sendError(element, name, value);
     }
@@ -113,7 +126,13 @@ function processElement(element) {
             if (classArray.length > 1) {
                 let name = classArray[0];
                 let value = classArray.slice(1).join('-');
-                assignStyle(element, name, value);
+                let condition = null;
+                if (value.includes('_')) {
+                    let valueArray = value.split('_');
+                    value = valueArray[0];
+                    condition = valueArray[1];
+                }
+                assignStyle(element, name, value, condition);
             }
         });
     }
@@ -159,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mutations.forEach(mutation => {
             mutation.addedNodes.forEach(processNode);
         });
-        console.log("[CryoClass] MutationObserver Done");
+        console.log("[CryoClass] MutationObserver Ready");
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
