@@ -106,9 +106,9 @@ function processElement(element) {
 
 function processNode(node) {
     if (node instanceof DocumentFragment) {
-        node.querySelectorAll('*').forEach(child => processElements(child));
+        node.querySelectorAll('*').forEach(child => processElement(child));
     } else if (node.nodeType === Node.ELEMENT_NODE) {
-        processElements(node);
+        processElement(node);
     }
 }
 
