@@ -120,13 +120,29 @@ function processElement(element) {
     ifDebugLog("Processing element:", element);
 }
 
+function processDocumentFragment(fragment) {
+    fragment.querySelectorAll('*').forEach(child => {
+        ifDebugLog("Processing fragment child:", child);
+        processElement(child);
+    });
+    ifDebugLog("Processing fragment:", fragment);
+}
+
+function processElementNode(element) {
+    ifDebugLog("Processing node:", element);
+    processElement(element);
+    element.querySelectorAll('*').forEach(child => {
+        processElement(child);
+        ifDebugLog("Processing node child:", child);
+    });
+}
+
 function processNode(node) {
     if (node instanceof DocumentFragment) {
-        node.querySelectorAll('*').forEach(child => processElement(child));
+        processDocumentFragment(node);
     } else if (node.nodeType === Node.ELEMENT_NODE) {
-        processElement(node);
+        processElementNode(node);
     }
-    ifDebugLog("Processing node:", node);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
