@@ -103,8 +103,6 @@ function assignStyle(element, name, value, condition) {
                 function updateStyle() {
                     if (!isNaN(conditionValue) && window.innerWidth <= conditionValue) {
                         element.style[fullName] = fullValue;
-                    } else {
-                        element.style[fullName] = '';
                     }
                 }
                 updateStyle();
