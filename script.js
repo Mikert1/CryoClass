@@ -94,15 +94,25 @@ function assignStyle(element, name, value, condition) {
     let fullName = shortNameToFullName(name);
     if (fullName) {
         let fullValue = shortValueToFullValue(name, value);
+
+        if (!element.__originalStyles) {
+            element.__originalStyles = {};
+        }
+        if (!(fullName in element.__originalStyles)) {
+            element.__originalStyles[fullName] = element.style[fullName] || '';
+        }
+
         if (condition) {
             if (condition === 'hover') {
                 element.addEventListener('mouseenter', () => element.style[fullName] = fullValue);
-                element.addEventListener('mouseleave', () => element.style[fullName] = '');
+                element.addEventListener('mouseleave', () => element.style[fullName] = element.__originalStyles[fullName]);
             } else if (!isNaN(parseInt(condition, 10))) {
                 let conditionValue = parseInt(condition, 10);
                 function updateStyle() {
                     if (!isNaN(conditionValue) && window.innerWidth <= conditionValue) {
                         element.style[fullName] = fullValue;
+                    } else {
+                        element.style[fullName] = element.__originalStyles[fullName];
                     }
                 }
                 updateStyle();
