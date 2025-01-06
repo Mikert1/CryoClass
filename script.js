@@ -94,11 +94,9 @@ function assignStyle(element, name, value, condition) {
     let fullName = shortNameToFullName(name);
     if (fullName) {
         let fullValue = shortValueToFullValue(name, value);
-
         if (!element.__storedStyles) {
             element.__storedStyles = { default: {}, conditional: {} };
         }
-
         if (!condition) {
             element.style[fullName] = fullValue;
             element.__storedStyles.default[fullName] = fullValue;
@@ -108,7 +106,7 @@ function assignStyle(element, name, value, condition) {
                     element.style[fullName] = fullValue;
                 });
                 element.addEventListener('mouseleave', () => {
-                    element.style[fullName] = element.__storedStyles.default[fullName] || '';
+                    element.style[fullName] = getStyleBasedOnConditions(element, fullName);
                 });
             } else if (!isNaN(parseInt(condition, 10))) {
                 let conditionValue = parseInt(condition, 10);
@@ -118,7 +116,11 @@ function assignStyle(element, name, value, condition) {
                         element.style[fullName] = fullValue;
                         element.__storedStyles.conditional[fullName] = fullValue;
                     } else {
-                        element.style[fullName] = element.__storedStyles.default[fullName] || '';
+                        if (element.__storedStyles.conditional[fullName]) {
+                            console.log(`Removing conditional style for ${fullName}`);
+                            delete element.__storedStyles.conditional[fullName];
+                        }
+                        element.style[fullName] = getStyleBasedOnConditions(element, fullName);
                     }
                 }
 
@@ -129,6 +131,13 @@ function assignStyle(element, name, value, condition) {
     } else {
         sendError(element, name, value);
     }
+}
+
+function getStyleBasedOnConditions(element, fullName) {
+    if (element.__storedStyles.conditional[fullName]) {
+        return element.__storedStyles.conditional[fullName];
+    }
+    return element.__storedStyles.default[fullName] || '';
 }
 
 function ifDebugLog(message, element) {
