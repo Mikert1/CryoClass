@@ -101,11 +101,25 @@ function assignStyle(element, name, value, condition) {
             element.style[fullName] = fullValue;
             element.__storedStyles.default[fullName] = fullValue;
         } else {
-            if (condition === 'hover') {
+            if (condition === 'hover' || condition === 'h') {
                 element.addEventListener('mouseenter', () => {
                     element.style[fullName] = fullValue;
                 });
                 element.addEventListener('mouseleave', () => {
+                    element.style[fullName] = getStyleBasedOnConditions(element, fullName);
+                });
+            } else if (condition === 'focus' || condition === 'f') {
+                element.addEventListener('focus', () => {
+                    element.style[fullName] = fullValue;
+                });
+                element.addEventListener('blur', () => {
+                    element.style[fullName] = getStyleBasedOnConditions(element, fullName);
+                });
+            } else if (condition === 'active' || condition === 'a') {
+                element.addEventListener('mousedown', () => {
+                    element.style[fullName] = fullValue;
+                });
+                element.addEventListener('mouseup', () => {
                     element.style[fullName] = getStyleBasedOnConditions(element, fullName);
                 });
             } else if (!isNaN(parseInt(condition, 10))) {
@@ -117,7 +131,6 @@ function assignStyle(element, name, value, condition) {
                         element.__storedStyles.conditional[fullName] = fullValue;
                     } else {
                         if (element.__storedStyles.conditional[fullName]) {
-                            console.log(`Removing conditional style for ${fullName}`);
                             delete element.__storedStyles.conditional[fullName];
                         }
                         element.style[fullName] = getStyleBasedOnConditions(element, fullName);
