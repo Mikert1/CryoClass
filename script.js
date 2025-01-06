@@ -95,31 +95,36 @@ function assignStyle(element, name, value, condition) {
     if (fullName) {
         let fullValue = shortValueToFullValue(name, value);
 
-        if (!element.__originalStyles) {
-            element.__originalStyles = {};
-        }
-        if (!(fullName in element.__originalStyles)) {
-            element.__originalStyles[fullName] = element.style[fullName] || '';
+        if (!element.__storedStyles) {
+            element.__storedStyles = { default: {}, conditional: {} };
         }
 
-        if (condition) {
+        if (!condition) {
+            element.style[fullName] = fullValue;
+            element.__storedStyles.default[fullName] = fullValue;
+        } else {
             if (condition === 'hover') {
-                element.addEventListener('mouseenter', () => element.style[fullName] = fullValue);
-                element.addEventListener('mouseleave', () => element.style[fullName] = element.__originalStyles[fullName]);
+                element.addEventListener('mouseenter', () => {
+                    element.style[fullName] = fullValue;
+                });
+                element.addEventListener('mouseleave', () => {
+                    element.style[fullName] = element.__storedStyles.default[fullName] || '';
+                });
             } else if (!isNaN(parseInt(condition, 10))) {
                 let conditionValue = parseInt(condition, 10);
+
                 function updateStyle() {
-                    if (!isNaN(conditionValue) && window.innerWidth <= conditionValue) {
+                    if (window.innerWidth <= conditionValue) {
                         element.style[fullName] = fullValue;
+                        element.__storedStyles.conditional[fullName] = fullValue;
                     } else {
-                        element.style[fullName] = element.__originalStyles[fullName];
+                        element.style[fullName] = element.__storedStyles.default[fullName] || '';
                     }
                 }
+
                 updateStyle();
                 window.addEventListener('resize', updateStyle);
             }
-        } else {
-            element.style[fullName] = fullValue;
         }
     } else {
         sendError(element, name, value);
