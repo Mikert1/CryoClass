@@ -4,19 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="test.js" defer></script>
     <script src="script.js" errorDisplay="true" debugMode="false"></script>
 </head>
-<body class="bc-black">
-    <div class="jc-sa d-f bc-r bc-b_800px bc-g_hover">
-        <div class="bc-blue">test</div>
-        <div class="bc-green">test</div>
+<body class="bc-#050909 fontf-ss c-#f9f9f9 ml-10% mr-10%">
+    <div class="d-f ai-c g-10px">
+        <img class="w-40px h-40px" src="assets/logo.svg" alt="">
+        <p class="font-l m-0">Cryonium</p>
     </div>
-    <template>
-        <div class="jc-sa d-f bc-r bc-b_800px">
-            <div class="bc-blue">test</div>
-            <div class="bc-green">test</div>
+    <div class="mb-40px">
+        <h1 class="mb-10px mt-20px">CryoClass Documentation</h1>
+        <p class="c-r m-0px">Please note that the framework is still in development so is this documentation.</p>
+    </div>
+
+    <h2 class="mb-10px">What is CryoClass?</h2>
+    <p>
+        With help of CryoClass you can add styling quickly using short name classes or their fullname.<br>
+        When i use frameworks i always feel like my freedom and creativity is taken away from me.<br>
+        Allow me to show you an example:<br>
+    </p>
+    <p>Lets first add a Width</p>
+    <div class="d-f">
+        <div class="w-calc(100%/3)">
+            <h3>Bootstrap</h3>
+            <p>w-25 <span class="c-#999999">- sets 25% width</span></p>
+            <p>sadly thats it with 25 50 75 and 100 in %</p>
+            <div class="w"></div>
         </div>
-    </template>
+        <div class="w-calc(100%/3)">
+            <h3>Tailwind</h3>
+            <p>
+                <p>
+                    You can add width in pixels from gaps 2px-4px between each class.<br>
+                    And the max you can set is 384px.<br>
+                    For example:
+                </p>
+                w-1<span class="c-#999999"> sets 0.25rem; /* 4px */</span><br>
+                w-1.5<span class="c-#999999"> sets 0.375rem; /* 6px */</span><br><br>
+
+                <p>
+                    You can add some most used % like anything in the table of 12 (5/12).<br>
+                    For example:
+                </p>
+                w-1/2<span class="c-#999999"> sets 50%;</span><br>
+                w-1/3<span class="c-#999999"> sets 33.333333%;</span><br><br>
+                
+                <p>And max and min width.</p>
+                w-min<span class="c-#999999"> sets min-content;</span><br>
+                w-max<span class="c-#999999"> sets 100%;</span><br><br>
+
+                <p>Even covered view width.</p>
+                w-screen<span class="c-#999999"> sets 100vw;</span><br>
+
+                <p>Tailwind does cover a lot thats nice</p>
+            </p>
+        </div>
+        <div class="w-calc(100%/3)">
+            <h3>CryoClass (This framework)</h3>
+            <p>
+                <p>
+                    You can add width in pixels with no limitations.<br>
+                    Standard px is chosen but you can say rem or em or anything that css normally supports.<br>
+                    For example:
+                </p>
+                w-300px<span class="c-#999999"> sets 300px;</span><br>
+                w-24rem<span class="c-#999999"> sets 24rem;</span><br><br>
+
+                <p>
+                    You can add any % even 33.3333%<br>
+                    For example:
+                </p>
+                w-50%<span class="c-#999999"> sets 50%;</span><br>
+                w-68%<span class="c-#999999"> sets 68%;</span><br><br>
+
+                <p>
+                    View width, you might even use calc in there.<br>
+                    if you can use it in css its here.<br>
+                    For example:
+                </p>
+                w-100vh<span class="c-#999999"> sets 100vh;</span><br>
+                w-calc(100vw/8+10px)<span class="c-#999999"> sets calc(100vw / 8 + 10px);</span><br><br>
+
+                <p>
+                    Realy anything you can think of.<br>
+                </p>
+            </p>
+        </div>
+    </div>
+
 </body>
 </html>
