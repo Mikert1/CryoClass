@@ -28,7 +28,8 @@ const shortNames = {
 
     c: { name : 'color', value : { r: 'red', g: 'green', b: 'blue', y: 'yellow', o: 'orange', w: 'white', gr: 'gray', } },
     bc: { name : 'backgroundColor', value : { r: 'red', g: 'green', b: 'blue', y: 'yellow', o: 'orange', w: 'white', gr: 'gray', } },
-    b: { name : 'border', value : { n: 'none', } },
+    b: { name : 'border', value : { n: 'none', s: 'solid'} },
+    bw: { name : 'borderWidth', value : { n: 'none', } },
     br: { name : 'borderRadius', value : { n: 'none', } },
     bs: { name : 'boxShadow', value : { n: 'none', } },
 
@@ -61,7 +62,7 @@ function shortNameToFullName(name) {
 }
 
 function shortValueToFullValue(name, value) {
-    if (shortNames[name].value[value]) {
+    if (shortNames[name] && shortNames[name].value[value]) {
         return shortNames[name].value[value];
     }
     return value;
