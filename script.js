@@ -166,14 +166,26 @@ function processElement(element) {
             let classArray = className.split('-');
             if (classArray.length > 1) {
                 let name = classArray[0];
+                let to = null;
+                if (name.includes(':')) {
+                    const nameArray = name.split(':');
+                    to = nameArray[0];
+                    name = nameArray[1];
+                }
                 let value = classArray.slice(1).join('-');
                 let condition = null;
                 if (value.includes('_')) {
-                    let valueArray = value.split('_');
+                    const valueArray = value.split('_');
                     value = valueArray[0];
                     condition = valueArray[1];
                 }
-                assignStyle(element, name, value, condition);
+                if (to === 'c') {
+                    element.querySelectorAll('*').forEach(child => {
+                        assignStyle(child, name, value, condition);
+                    });
+                } else {
+                    assignStyle(element, name, value, condition);
+                }
             }
         });
     }
