@@ -18,8 +18,11 @@ const shortNames = {
     pr: { name : 'paddingRight', value : { a: 'auto', } },
     pb: { name : 'paddingBottom', value : { a: 'auto', } },
     pl: { name : 'paddingLeft', value : { a: 'auto', } },
+
+    pos: { name : 'position', value : { s: 'static', r: 'relative', a: 'absolute', f: 'fixed', i: 'sticky' } },
+    position: { name : 'position', value : { s: 'static', r: 'relative', a: 'absolute', f: 'fixed', i: 'sticky' } },
     
-    w: { name : 'width', value : { a: 'auto', } },
+    w: { name : 'width', value : { a: 'auto', max: 'min-content', min: 'min-content' } },
     h: { name : 'height', value : { a: 'auto', } },
     f: { name : 'flex', value : { a: 'auto', } },
     o: { name : 'order', value : { a: 'auto', } },
