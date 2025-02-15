@@ -1,12 +1,14 @@
 const shortNames = {
     d: { name : 'display', value : { n: 'none', b: 'block', i: 'inline', ib: 'inline-block', f: 'flex', g: 'grid', } },
-    jc: { name : 'justifyContent', value : { s: 'space-between', c: 'center', e: 'end', b: 'space-between', a: 'space-around', sb: 'space-between', sa: 'space-around'} },
-    ai: { name : 'alignItems', value : { s: 'stretch', c: 'center', e: 'end', b: 'baseline', } },
+    jc: { name : 'justifyContent', value : { s: 'start', c: 'center', e: 'end', b: 'space-between', a: 'space-around', sb: 'space-between', sa: 'space-around'} },
+    ai: { name : 'alignItems', value : { s: 'start', c: 'center', e: 'end', b: 'space-between', a: 'space-around', sb: 'space-between', sa: 'space-around'} },
     fd: { name : 'flexDirection', value : { r: 'row', rr: 'row-reverse', c: 'column', cr: 'column-reverse', } },
     fw: { name : 'flexWrap', value : { n: 'nowrap', w: 'wrap', wr: 'wrap-reverse', } },
     ac: { name : 'alignContent', value : { s: 'stretch', c: 'center', e: 'end', b: 'space-between', a: 'space-around', sb: 'space-between', sa: 'space-around'} },
     as: { name : 'alignSelf', value : { a: 'auto', s: 'stretch', c: 'center', e: 'end', b: 'baseline', } },
-    p: { name : 'position', value : { s: 'static', r: 'relative', a: 'absolute', f: 'fixed', i: 'sticky' } },
+    fg: { name : 'flexGrow', value : { a: 'auto', } },
+    fs: { name : 'flexShrink', value : { a: 'auto', } },
+    fb: { name : 'flexBasis', value : { a: 'auto', } },
 
     m: { name : 'margin', value : { a: 'auto', } },
     mt: { name : 'marginTop', value : { a: 'auto', } },
@@ -23,6 +25,9 @@ const shortNames = {
     position: { name : 'position', value : { s: 'static', r: 'relative', a: 'absolute', f: 'fixed', i: 'sticky' } },
     
     w: { name : 'width', value : { a: 'auto', max: 'min-content', min: 'min-content' } },
+    mw: { name : 'maxWidth', value : { a: 'auto', max: 'min-content', min: 'min-content' } },
+    maxw: { name : 'maxWidth', value : { a: 'auto', max: 'min-content', min: 'min-content' } },
+    minw: { name : 'minWidth', value : { a: 'auto', max: 'min-content', min: 'min-content' } },
     h: { name : 'height', value : { a: 'auto', } },
     f: { name : 'flex', value : { a: 'auto', } },
     o: { name : 'order', value : { a: 'auto', } },
@@ -33,8 +38,13 @@ const shortNames = {
     bc: { name : 'backgroundColor', value : { r: 'red', g: 'green', b: 'blue', y: 'yellow', o: 'orange', w: 'white', gr: 'gray', } },
     b: { name : 'border', value : { n: 'none', s: 'solid'} },
     bw: { name : 'borderWidth', value : { n: 'none', } },
-    br: { name : 'borderRadius', value : { n: 'none', } },
     bs: { name : 'boxShadow', value : { n: 'none', } },
+    
+    br: { name : 'borderRadius', value : { n: 'none', } },
+    btlr: { name : 'borderTopLeftRadius', value : { n: 'none', } },
+    btrr: { name : 'borderTopRightRadius', value : { n: 'none', } },
+    bblr: { name : 'borderBottomLeftRadius', value : { n: 'none', } },
+    bbrr: { name : 'borderBottomRightRadius', value : { n: 'none', } },
 
     font: { name : 'fontSize', value : { s: 'small', m: 'medium', l: 'large', xl: 'x-large', xxl: 'xx-large', } },
     fontw: { name : 'fontWeight', value : { l: 'lighter', n: 'normal', b: 'bold', } },
